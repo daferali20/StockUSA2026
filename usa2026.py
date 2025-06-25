@@ -197,23 +197,32 @@ def main():
         st.markdown("---")
         st.header("أهم المؤشرات الأمريكية")
         
-        # عرض مؤشرات السوق الرئيسية
-        indices = {
-            "S&P 500": "^GSPC",
-            "Dow Jones": "^DJI",
-            "Nasdaq": "^IXIC"
-        }
-        
-        cols = st.columns(3)
-        for i, (name, ticker_symbol) in enumerate(indices.items()):
-            data = yf.download(ticker_symbol, start=start_date, end=end_date)
-            if not data.empty:
-                change = ((data['Close'][-1] - data['Close'][0]) / data['Close'][0]) * 100
+       # في قسم عرض مؤشرات السوق الرئيسية (تبويب الصفحة الرئيسية)
+indices = {
+    "S&P 500": "^GSPC",
+    "Dow Jones": "^DJI",
+    "Nasdaq": "^IXIC"
+}
+
+cols = st.columns(3)
+for i, (name, ticker_symbol) in enumerate(indices.items()):
+    data = yf.download(ticker_symbol, start=start_date, end=end_date)
+    if not data.empty and 'Close' in data.columns:
+        try:
+            close_prices = data['Close']
+            if len(close_prices) > 0:
+                change = ((close_prices.iloc[-1] - close_prices.iloc[0]) / close_prices.iloc[0]) * 100
                 cols[i].metric(
                     label=name,
-                    value=f"{data['Close'][-1]:.2f}",
+                    value=f"{close_prices.iloc[-1]:.2f}",
                     delta=f"{change:.2f}%"
                 )
+            else:
+                cols[i].metric(label=name, value="N/A", delta="N/A")
+        except Exception as e:
+            cols[i].metric(label=name, value="Error", delta=str(e))
+    else:
+        cols[i].metric(label=name, value="No Data", delta="N/A")
     
     with tab2:
         st.header("آخر الأخبار المالية العاجلة")
