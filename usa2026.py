@@ -17,6 +17,8 @@ import time
 import requests
 from dotenv import load_dotenv
 import os
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # تحميل مفاتيح API من ملف .env
 load_dotenv()
@@ -403,7 +405,7 @@ def main():
         if ticker:
             try:
                 with st.spinner('جاري تحميل بيانات السهم...'):
-                    data = yf.download(ticker, start=start_date, end=end_date, progress=False)
+                    data = yf.download(ticker, start=start_date, end=end_date, show_errors=False, progress=False)
                     
                     if not data.empty:
                         # حساب المؤشرات الفنية
