@@ -10,3 +10,9 @@ vaderSentiment
 textblob
 python-telegram-bot
 matplotlib
+numpy
+matplotlib
+ta
+scikit-learn
+newsapi-python
+pandas-datareader
