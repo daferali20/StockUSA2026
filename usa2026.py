@@ -41,6 +41,7 @@ NEWS_API_KEY = 'f55929edb5ee471791a1e622332ff6d8'  # احصل عليه من news
 @st.cache_data(ttl=3600)  # تخزين النتائج لمدة ساعة
 def get_financial_news():
     try:
+        time.sleep(2)  # تأخير 2 ثانية بين الطلبات
         newsapi = NewsApiClient(api_key=NEWS_API_KEY)
         news = newsapi.get_top_headlines(
             category='business',
@@ -58,6 +59,7 @@ def get_financial_news():
 @st.cache_data(ttl=3600)
 def get_top_gainers():
     try:
+        time.sleep(2)  # تأخير 2 ثانية بين الطلبات
         url = "https://finance.yahoo.com/gainers"
         tables = pd.read_html(url)
         return tables[0].head(10) if tables else pd.DataFrame()
