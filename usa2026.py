@@ -328,7 +328,7 @@ def main():
     with tab1:
         st.header("الأسهم الأكثر ارتفاعاً اليوم")
         with st.spinner('جاري تحميل بيانات الأسهم الصاعدة...'):
-            gainers = get_top_gainers()
+            gainers = get_top_gainers_with_alert()
             if not gainers.empty:
                 # تحسين عرض الجدول
                 st.dataframe(
