@@ -46,31 +46,23 @@ TELEGRAM_BOT_TOKEN = "1079128294:AAHre_zWJNLLEBG1toniBDYbX5AKa6EokgM"
 TELEGRAM_CHAT_ID = "@D_Option"
 #-
 # API Keys
+# إعداد تليجرام
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-# ---------------------------------------------------
 def send_telegram_message(message: str):
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-    
-    if not token or not chat_id:
-        st.warning("لم يتم العثور على مفتاح التليجرام.")
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         return
-
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    payload = {
-        "chat_id": chat_id,
-        "text": message,
-        "parse_mode": "Markdown"
-    }
-    
     try:
-        response = requests.post(url, data=payload)
-        if response.status_code != 200:
-            st.warning("فشل إرسال التنبيه إلى Telegram.")
-    except Exception as e:
-        st.error(f"خطأ في إرسال رسالة Telegram: {str(e)}")
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        data = {
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": message,
+            "parse_mode": "Markdown"
+        }
+        requests.post(url, data=data)
+    except:
+        pass
 
 # ---------------------------------------------------
 @st.cache_data(ttl=3600)
@@ -109,12 +101,13 @@ def get_top_gainers():
         st.error(f"حدث خطأ في جلب الأسهم الصاعدة: {str(e)}")
         return pd.DataFrame()
 
+# تعديل دالة Tiingo لمعالجة مشكلة تحويل البيانات
 @st.cache_data(ttl=3600)
 def get_top_gainers_tiingo():
     try:
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': f'Token {TIINGO_API_KEY}'
+            'Authorization': f'Token {os.getenv("TIINGO_API_KEY")}'
         }
         response = requests.get(
             "https://api.tiingo.com/tiingo/daily/top",
@@ -122,10 +115,24 @@ def get_top_gainers_tiingo():
             params={'columns': 'ticker,priceChange,priceChangePercent,volume'}
         )
         data = response.json()
-        return pd.DataFrame(data).head(10)
+        if isinstance(data, list):
+            return pd.DataFrame(data).head(10)
+        else:
+            return pd.DataFrame()
     except Exception as e:
         st.warning(f"لم يتمكن من جلب البيانات من Tiingo: {str(e)}")
         return pd.DataFrame()
+
+# ربط التنبيه مع الأسهم الأكثر ارتفاعاً في الصفحة الرئيسية
+def get_top_gainers_with_alert():
+    df = get_top_gainers_tiingo()
+    if not df.empty:
+        top = df.iloc[0]
+        symbol = top.get("ticker", "")
+        change = top.get("priceChangePercent", "")
+        if symbol and change:
+            send_telegram_message(f"🚀 السهم الأعلى ارتفاعاً اليوم: {symbol} بنسبة {change:.2f}%")
+    return df
 
 # ---------------------------------------------------
 # وظائف التحليل الفني المحسنة
