@@ -42,9 +42,36 @@ st.markdown("""
 NEWS_API_KEY = os.getenv("NEWS_API_KEY", "f55929edb5ee471791a1e622332ff6d8")
 TIINGO_API_KEY = os.getenv("TIINGO_API_KEY", "16be092ddfdcb6e34f1de36875a3072e2c724afb")
 ALPHA_VANTAGE_KEY = os.getenv("ALPHA_VANTAGE_KEY", "X5QLR930PG6ONM5H")
+TELEGRAM_BOT_TOKEN = "1079128294:AAHre_zWJNLLEBG1toniBDYbX5AKa6EokgM"
+TELEGRAM_CHAT_ID = "@D_Option"
+#-
+# API Keys
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # ---------------------------------------------------
-# قسم الأخبار العاجلة
+def send_telegram_message(message: str):
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    
+    if not token or not chat_id:
+        st.warning("لم يتم العثور على مفتاح التليجرام.")
+        return
+
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    payload = {
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": "Markdown"
+    }
+    
+    try:
+        response = requests.post(url, data=payload)
+        if response.status_code != 200:
+            st.warning("فشل إرسال التنبيه إلى Telegram.")
+    except Exception as e:
+        st.error(f"خطأ في إرسال رسالة Telegram: {str(e)}")
+
 # ---------------------------------------------------
 @st.cache_data(ttl=3600)
 def get_financial_news():
