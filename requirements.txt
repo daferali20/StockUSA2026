@@ -16,3 +16,4 @@ ta
 scikit-learn
 newsapi-python
 pandas-datareader
+python-dotenv
