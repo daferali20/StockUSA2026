@@ -36,7 +36,23 @@ st.markdown("""
 NEWS_API_KEY = 'f55929edb5ee471791a1e622332ff6d8'  # احصل عليه من newsapi.org
 
 # ---------------------------------------------------
-# قسم الأخبار العاجلة
+TELEGRAM_BOT_TOKEN = "7955161282:AAG2udkomniL-9kEgwdVheYXI52wVR3wiVM"
+TELEGRAM_CHAT_ID = "@D_Option"
+def send_telegram_alert(message: str):
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        payload = {
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": message,
+            "parse_mode": "HTML"
+        }
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            st.sidebar.success("✉️ تم إرسال تنبيه تيليجرام بنجاح")
+        else:
+            st.sidebar.error(f"❌ فشل الإرسال. الكود: {response.status_code} - {response.text}")
+    except Exception as e:
+        st.sidebar.error(f"❌ خطأ أثناء إرسال التنبيه: {e}")
 # ---------------------------------------------------
 @st.cache_data(ttl=3600)  # تخزين النتائج لمدة ساعة
 def get_financial_news():
