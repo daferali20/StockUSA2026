@@ -42,28 +42,9 @@ st.markdown("""
 NEWS_API_KEY = os.getenv("NEWS_API_KEY", "f55929edb5ee471791a1e622332ff6d8")
 TIINGO_API_KEY = os.getenv("TIINGO_API_KEY", "16be092ddfdcb6e34f1de36875a3072e2c724afb")
 ALPHA_VANTAGE_KEY = os.getenv("ALPHA_VANTAGE_KEY", "X5QLR930PG6ONM5H")
-TELEGRAM_BOT_TOKEN = "1079128294:AAHre_zWJNLLEBG1toniBDYbX5AKa6EokgM"
-TELEGRAM_CHAT_ID = "@D_Option"
-#-
-# API Keys
-# إعداد تليجرام
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-def send_telegram_message(message: str):
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        return
-    try:
-        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-        data = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": message,
-            "parse_mode": "Markdown"
-        }
-        requests.post(url, data=data)
-    except:
-        pass
-
+# ---------------------------------------------------
+# قسم الأخبار العاجلة
 # ---------------------------------------------------
 @st.cache_data(ttl=3600)
 def get_financial_news():
@@ -133,7 +114,6 @@ def get_top_gainers_with_alert():
         if symbol and change:
             send_telegram_message(f"🚀 السهم الأعلى ارتفاعاً اليوم: {symbol} بنسبة {change:.2f}%")
     return df
-
 # ---------------------------------------------------
 # وظائف التحليل الفني المحسنة
 # ---------------------------------------------------
