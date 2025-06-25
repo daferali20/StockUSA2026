@@ -33,8 +33,8 @@ st.markdown("""
 """)
 
 # API Keys (يجب استبدالها بمفاتيحك الخاصة)
-NEWS_API_KEY = 'your_news_api_key_here'  # احصل عليه من newsapi.org
-
+NEWS_API_KEY = 'f55929edb5ee471791a1e622332ff6d8'  # احصل عليه من newsapi.org
+#TIINGO_API_KEY = "16be092ddfdcb6e34f1de36875a3072e2c724afb"
 # ---------------------------------------------------
 # قسم الأخبار العاجلة
 # ---------------------------------------------------
